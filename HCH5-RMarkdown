@@ -1,8 +1,63 @@
 ---
-title: "Chapter 5: 5.4, 5.5, 5.7, 5.8, 5.22(Hand), 5.23(Hand), 5.26"
+title: "Chapter 5(Edition Eight): 5.4, 5.5, 5.7, 5.8, 5.22(Hand), 5.23(Hand), 5.26"
 author: "Jeremy Ling & Emmanuel Mejia"
 date: "April 10, 2018"
 output: pdf_document
 ---
 
+##5.4
+
+\textbf{An engineer suspects that the surface finish of a metal
+part is influenced by the feed rate and the depth of cut. He
+selects three feed rates and four depths of cut. He then conducts
+a factorial experiment and obtains the following data}
+
+\textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ = 0.05.}
+
+```{r}
+library(readxl)
+surface <- read_excel("E:/Chapter 5/surface.xlsx")
+####
+a=3
+b=4
+n=3
+surface.aov = aov(Surface ~ Feed.Rate*Depth, surface)
+summary(surface.aov)
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+We analyze the anova and we can see from our p-values that they are all too small. We can state the row, column, and interaction are all significantly different and we can state that this model is significant.
+
+\textbf{(b) Prepare appropriate residual plots and comment on the
+model’s adequacy.}
+
+```{r}
+surface.lm=lm(Surface ~ Feed.Rate*Depth,surface)
+res=surface$Surface-fitted(surface.lm)
+library(car)
+qqPlot(res)
+plot(fitted(surface.lm), res) 
+plot(as.numeric(surface$Feed.Rate), res)
+plot(as.numeric(surface$Depth), res)
+```
+
+Looking at normality and how the residual behavoirs 
+
+\textbf{(c) Obtain point estimates of the mean surface finish at
+each feed rate.}
+
+```{r}
+
+```
 
