@@ -70,8 +70,9 @@ summary(surface.aov)
 
 We analyze the anova and we can see from our p-values that they are all too small. We can state the row, column, and interaction are all significantly different and we can state that this model is significant.
 
-\textbf{(b) Prepare appropriate residual plots and comment on the
-modele's adequacy.}
+### Part b
+
+#### Prepare appropriate residual plots and comment on the model's adequacy.
 
 ```{r}
 surface.lm=lm(Surface ~ Feed.Rate*Depth,surface)
@@ -85,8 +86,9 @@ plot(as.numeric(surface$Depth), res)
 
 Looking at normality and how the residual behavoirs 
 
-\textbf{(c) Obtain point estimates of the mean surface finish at
-each feed rate.}
+### Part c
+
+#### Obtain point estimates of the mean surface finish at each feed rate.
 
 ```{r}
 
