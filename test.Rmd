@@ -5,29 +5,39 @@ date: "April 10, 2018"
 output: html_document
 ---
 
-##5.4
+```{r}
+library(readxl)     # reading excel files
+library(reshape2)   # changing tables to long format
+```
 
-\textbf{An engineer suspects that the surface finish of a metal
-part is influenced by the feed rate and the depth of cut. He
-selects three feed rates and four depths of cut. He then conducts
-a factorial experiment and obtains the following data}
 
-\textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ = 0.05.}
+## Problem 5.4
 
 ```{r}
-surface <- as.data.frame(x = matrix(data = c(rep(c(.2, .25, .3), each = 3, times = 4), rep(c(.15, .18, .2, .25), each = 9), c(74, 64, 60, 92, 86, 88, 99, 98, 102, 79, 68, 73, 98, 104, 88, 104, 99, 95, 82, 88, 92, 99, 108, 95, 108, 110, 99, 99, 104, 96, 104, 110, 99, 114, 111, 107)), nrow = 36, byrow = FALSE))
+# surface wide format
+surface.w <- as.data.frame(x = matrix(data = c(rep(c(.2, .25, .3), each = 3), c(74, 64, 60, 92, 86, 88, 99, 98, 102), c(79, 68, 73, 98, 104, 88, 104, 99, 95), c(82, 88, 92, 99, 108, 95, 108, 110, 99), c(99, 104, 96, 104, 110, 99, 114, 111, 107)), nrow = 9, byrow = FALSE))
 
-names(surface) <- c("Feed.Rate", "Depth", "Surface")
-
-#library(readxl)
-#surface <- read_excel("E:/Chapter 5/surface.xlsx")
-####
-a=3
-b=4
-n=3
-surface.aov = aov(Surface ~ Feed.Rate*Depth, surface)
-summary(surface.aov)
+names(surface.w) <- c("Feed.Rate", ".15", ".18", ".2", ".25")
 ```
+
+
+#### An engineer suspects that the surface finish of a metal part is influenced by the feed rate and the depth of cut. He selects three feed rates and four depths of cut. He then conducts a factorial experiment and obtains the following data:
+
+```{r}
+surface.w
+```
+
+
+```{r}
+
+```
+
+
+### Part a
+
+#### Analyze the data and draw conclusions. Use $\alpha$ = 0.05.}
+
+We test for the following to determin whether or not feed rate (in/min), depth of cut (in), and the existence of an interaction effect between them using the following hypothesis tests respectively.
 
 $H_0: \tau_1 = ... = \tau_a = 0$
 
@@ -40,6 +50,23 @@ $H_1: \beta_j \ne 0$ at least one
 $H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
 
 $H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+```{r}
+#surface <- read_excel("E:/Chapter 5/surface.xlsx")
+
+# surface long format
+surface <- melt(data = surface.w, id.vars = c("Feed.Rate"))
+names(surface) <- c("Feed.Rate", "Depth", "Surface")
+surface
+
+# a=3
+# b=4
+# n=3
+
+# running ANOVA
+surface.aov = aov(Surface ~ factor(Feed.Rate)*factor(Depth), surface)
+summary(surface.aov)
+```
 
 We analyze the anova and we can see from our p-values that they are all too small. We can state the row, column, and interaction are all significantly different and we can state that this model is significant.
 
