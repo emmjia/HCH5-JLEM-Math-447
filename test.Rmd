@@ -8,6 +8,7 @@ output: html_document
 ```{r}
 library(readxl)     # reading excel files
 library(reshape2)   # changing tables to long format
+library(car)        # qqplot
 ```
 
 
@@ -74,17 +75,29 @@ We analyze the anova and we can see from our p-values that they are all too smal
 
 #### Prepare appropriate residual plots and comment on the model's adequacy.
 
+A qqplot of our model, its residuals relative to the fit, and outputs to visualize variance homogeneity and their respective Bartlett Tests are shown below.
+
 ```{r}
-surface.lm=lm(Surface ~ Feed.Rate*Depth,surface)
+# Baselines: Feed.Rate (.2), Depth (.15)
+surface.lm=lm(Surface ~ factor(Feed.Rate)*factor(Depth),surface)
 res=surface$Surface-fitted(surface.lm)
-library(car)
+
+# checking normality
 qqPlot(res)
-plot(fitted(surface.lm), res) 
+
+# checking independence
+plot(fitted(surface.lm), res, ylim = c(-15,15))
+abline(h = 0, lty = 2)
+
+# checking variance homogeneity
 plot(as.numeric(surface$Feed.Rate), res)
 plot(as.numeric(surface$Depth), res)
+
+bartlett.test(Surface ~ factor(Feed.Rate), data = surface)
+bartlett.test(Surface ~ factor(Depth), data = surface)
 ```
 
-Looking at normality and how the residual behavoirs 
+Our qqplot indicates that our model is normal.  Our plot of residuals relative to the fit has residuals randomly distributed and centered at zero, indicating the model is independent.  Our last two plots indicate that variances seem homogenous, but our Bartlett's Test indicates that variances in 'Feed.Rate' aren't homogenous.
 
 ### Part c
 
@@ -94,3 +107,6 @@ Looking at normality and how the residual behavoirs
 
 ```
 
+### Part d
+
+#### Find the P-values for the tests in part (a)
