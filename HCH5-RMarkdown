@@ -16,11 +16,8 @@ a factorial experiment and obtains the following data}
 
 ```{r}
 library(readxl)
-surface <- read_excel("E:/Chapter 5/surface.xlsx")
+surface <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/surface.xlsx")
 ####
-a=3
-b=4
-n=3
 surface.aov = aov(Surface ~ Feed.Rate*Depth, surface)
 summary(surface.aov)
 ```
@@ -52,12 +49,108 @@ plot(as.numeric(surface$Feed.Rate), res)
 plot(as.numeric(surface$Depth), res)
 ```
 
-Looking at normality and how the residual behavoirs 
+We observe our plots and see normality is good and residuals are patternless, our model is good..
 
 \textbf{(c) Obtain point estimates of the mean surface finish at
 each feed rate.}
 
 ```{r}
-
+total1 = (74+64+60+79+68+73+82+88+92+99+104+96)
+estimate0.20 = total1/12; estimate0.20
+total2 = (92+86+88+98+104+88+99+108+95+104+110+99)
+estimate0.25 = total2/12; estimate0.25
+total3 = (99+98+102+104+99+95+108+110+99+114+111+107)
+estimate0.30 = total3/12; estimate0.30
 ```
+
+\textbf{(d) Find P-values for the tests in part (a)}
+
+```{r}
+surface.aov = aov(Surface ~ Feed.Rate*Depth, surface)
+summary(surface.aov)
+```
+
+The P-values are presented on the ANOVA output. The same p-values were used to determine our test in part (a). P-values are listed: 1.40e-10, 9.22e-09, 0.00156.
+
+##5.5
+
+\textbf{For the data in Problem 5.4, compute a 95 percent
+confidence interval estimate of the mean difference in
+response for feed rates of 0.20 and 0.25 in/min.}
+
+```{r}
+estimate0.20
+estimate0.25
+alpha = 0.05
+a=3
+b=4
+n=3
+MSe=summary(surface.aov)[[1]][4,3]
+tk.cri=qtukey(.95,a,a*b*(n-1))*sqrt(2*MSe/n)
+diff = estimate0.20-estimate0.25
+me=c(-1,1)*tk.cri+diff
+me
+```
+
+We are 95% confident that the difference between feed rates 0.20 and 0.25 is (-32.9, 0.953).
+
+##5.7
+
+\textbf{Johnson and Leone (Statistics and Experimental
+Design in Engineering and the Physical Sciences, Wiley,
+1977) describe an experiment to investigate warping of
+copper plates. The two factors studied were the temperature
+and the copper content of the plates. The response variable
+was a measure of the amount of warping. The data were as
+follows:}
+
+\textbf{(a) Is there any indication that either factor affects the
+amount of warping? Is there any interaction between
+the factors? Use $\alpha$ =  0.05.}
+
+```{r}
+library(readxl)
+warpCop <- read_excel("warpCop.xlsx")
+warpCop$Temperature=as.factor(warpCop$Temperature) #factor A; a levels
+warpCop$Copper.Content=as.factor(warpCop$Copper.Content) #factor B; b levels
+warpCop.aov = aov(Warping ~ Temperature*Copper.Content, warpCop)
+summary(warpCop.aov)
+
+MSe=summary(warpCop.aov)[[1]][4,3]
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+After reviewing the p-values from our ANOVA we can see that temperature and copper content have small p-values and we can conclude that both factors affect the amount of warping. However, the interaction variable has a large p-value, we fail to reject and conclude no interaction has an affect on warping.
+
+\textbf{(b) Analyze the residuals from this experiment.}
+
+```{r}
+warpCop.lm=lm(Warping ~ Temperature*Copper.Content,warpCop)
+res=warpCop$Warping-fitted(warpCop.lm)
+library(car)
+qqPlot(res)
+plot(fitted(warpCop.lm), res) 
+plot(as.numeric(warpCop$Temperature), res)
+plot(as.numeric(warpCop$Copper.Content), res)
+```
+
+Observing our plots, normality is good, residual plots are random and patternless. We can state that our model is good.
+
+\textbf{(c) Plot the average warping at each level of copper content
+and compare them to an appropriately scaled t distribution.
+Describe the differences in the effects of the
+different levels of copper content on warping. If low
+warping is desirable, what level of copper content
+would you specify?}
 
