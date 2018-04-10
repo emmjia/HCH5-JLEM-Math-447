@@ -303,10 +303,12 @@ F_A0 <- 14.25
 F_B0 <- 14.25
 F_AB0 <- 3.77
 
-F_A > F_A0
-F_B > F_B0
-F_AB > F_AB0
+abs(F_A) > F_A0
+abs(F_B) > F_B0
+abs(F_AB) > F_AB0
 ```
+
+From our F-tests, we find that temperature has an effect on warping, while copper content(%) does not.  In addition, there is not interaction effect on warping.
 
 ##5.23
 
@@ -371,6 +373,8 @@ abs(F_B) > F_B0
 abs(F_AB) > F_AB0
 ```
 
+It appears both operators and production machines in addition to the interaction between the two have no effect on the breaking strength of a synthetic fiber.
+
 ##5.26
 
 \textbf{An experiment was conducted to study the life (in
@@ -432,7 +436,9 @@ plot(fitted(batteries.lm), res)
 plot(as.numeric(batteries$Brand), res)
 plot(as.numeric(batteries$Device), res)
 ```
+While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.  This model is not adequate.
 
-While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
+
+
 
 
