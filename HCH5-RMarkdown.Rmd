@@ -412,3 +412,16 @@ batteries
 batteries.aov = aov(as.numeric(Life)~factor(Brand)*factor(Device), batteries)
 summary(batteries.aov)
 ```
+
+\textbf{(b) Investigate model adequacy by plotting the residuals.}
+
+```{r}
+batteries.lm=lm(as.numeric(Life) ~ factor(Brand)*factor(Device), batteries)
+res=as.numeric(batteries$Life)-fitted(batteries.lm)
+library(car)
+qqPlot(res)
+plot(fitted(batteries.lm), res) 
+plot(as.numeric(batteries$Brand), res)
+plot(as.numeric(batteries$Device), res)
+```
+While our qqplot reveals that our model looks normal, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
