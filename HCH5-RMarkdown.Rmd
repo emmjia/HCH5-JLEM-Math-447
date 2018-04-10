@@ -121,7 +121,24 @@ the factors? Use $\alpha$ =  0.05.}
 
 ```{r}
 library(readxl)
-warpCop <- read_excel("warpCop.xlsx")
+# warpCop <- read_excel("warpCop.xlsx")
+
+# warpCop wide format
+warpCop.w <- as.data.frame(x = matrix(data = c(rep(c(50, 75, 100, 125),
+                                                   each = 2),
+                                               c(17, 20, 12, 9, 16, 12, 21, 17),
+                                               c(16, 21, 18, 13, 18, 21, 23, 21),
+                                               c(24, 22, 17, 12, 25, 23, 23, 22),
+                                               c(28, 27, 27, 31, 30, 23, 29, 31)),
+                                      byrow = FALSE,
+                                      nrow = 8))
+names(warpCop.w) <- c("Temperature", "40", "60", "80", "100")
+
+# warpCop long format
+warpCop <- melt(data = warpCop.w, id.vars = c("Temperature"))
+names(warpCop) <- c("Temperature", "Copper.Content", "Warping")
+warpCop
+
 warpCop$Temperature=as.factor(warpCop$Temperature) #factor A; a levels
 warpCop$Copper.Content=as.factor(warpCop$Copper.Content) #factor B; b levels
 warpCop.aov = aov(Warping ~ Temperature*Copper.Content, warpCop)
