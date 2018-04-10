@@ -39,7 +39,7 @@ We analyze the anova and we can see from our p-values that they are all too smal
 \textbf{(b) Prepare appropriate residual plots and comment on the
 model’s adequacy.}
 
-```{r}
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
 surface.lm=lm(Surface ~ Feed.Rate*Depth,surface)
 res=surface$Surface-fitted(surface.lm)
 library(car)
@@ -135,7 +135,7 @@ After reviewing the p-values from our ANOVA we can see that temperature and copp
 
 \textbf{(b) Analyze the residuals from this experiment.}
 
-```{r}
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
 warpCop.lm=lm(Warping ~ Temperature*Copper.Content,warpCop)
 res=warpCop$Warping-fitted(warpCop.lm)
 library(car)
@@ -186,8 +186,6 @@ warp.aov <- aov(formula = as.numeric(Warp) ~ factor(Blocks) + factor(Temp)*facto
                 data = warp)
 summary(warp.aov)
 
-# test space
-select(obj = )
 
 # sum of squares components
 n = 2; a = 4; b = 4
@@ -227,3 +225,5 @@ F_A > F_A0
 F_B > F_B0
 F_AB > F_AB0
 ```
+Using R as a calculator, after running our F-tests we find that copper content (%) has an effect on warping,
+though temperature does not. There is no interaction between the two.
