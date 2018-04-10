@@ -381,10 +381,12 @@ and the following data resulted.}
 
 \textbf{(a) Analyze the data and draw conclusions, using $\alpha$ =
 0.05.}
+
 ```{r}
 #batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
 
 # batteries wide format
+library(reshape2)
 batteries.w <- as.data.frame(x = matrix(data = c(rep(x = c("A", "B"),
                                                      each = 2),
                                                  c(8.6, 8.2, 9.4, 8.8),
@@ -421,7 +423,7 @@ affect battery life.
 
 \textbf{(b) Investigate model adequacy by plotting the residuals.}
 
-```{r}
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
 batteries.lm=lm(as.numeric(Life) ~ factor(Brand)*factor(Device), batteries)
 res=as.numeric(batteries$Life)-fitted(batteries.lm)
 library(car)
@@ -430,6 +432,7 @@ plot(fitted(batteries.lm), res)
 plot(as.numeric(batteries$Brand), res)
 plot(as.numeric(batteries$Device), res)
 ```
+
 While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
 
 
