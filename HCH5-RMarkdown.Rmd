@@ -182,6 +182,69 @@ different levels of copper content on warping. If low
 warping is desirable, what level of copper content
 would you specify?}
 
+##5.8
+
+\textbf{The factors that influence the breaking strength of a
+synthetic fiber are being studied. Four production machines
+and three operators are chosen and a factorial experiment is
+run using fiber from the same production batch. The results
+are as follows:}
+
+\textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ =  0.05.}
+
+```{r}
+#fiber <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/fiber.xlsx")
+
+# fiber wide format
+fiber.w <- as.data.frame(x = matrix(data = c(rep(c("1", "2", "3"),
+                                                 each = 2),
+                                             c(109, 110, 110, 112, 116, 114),
+                                             c(110, 115, 110, 111, 112, 115),
+                                             c(108, 109, 111, 109, 114, 119),
+                                             c(110, 108, 114, 112, 120, 117)),
+                                    nrow = 6,
+                                    byrow = FALSE))
+names(fiber.w) <- c("Operator", "1", "2", "3", "4")
+
+# fiber long format
+fiber <- melt(data = fiber.w, id.vars = c("Operator"))
+names(fiber) <- c("Operator", "Machine", "Strength")
+fiber
+  
+
+fiber.aov = aov(as.numeric(Strength) ~ Operator*Machine, fiber)
+summary(fiber.aov)
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+Observing our p-values on our ANOVA we see that Operator has an influence of fiber strength, while Machine and the interaction term has no influence ine fiber strength.
+
+\textbf{(b) Prepare appropriate residual plots and comment on the
+model's adequacy.}
+
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
+fiber.lm=lm(Strength ~ Operator*Machine,fiber)
+res=fiber$Strength-fitted(fiber.lm)
+library(car)
+qqPlot(res)
+plot(fitted(fiber.lm), res) 
+plot(as.numeric(fiber$Operator), res)
+plot(as.numeric(fiber$Machine), res)
+```
+
+Seeing the normality plot and our plotted residuals. We see that normality is good and that residuals are random and patternless. We can state that the model is good.
+
 ##5.22(Hand)
 
 ```{r}
