@@ -302,6 +302,8 @@ abs(F_B) > F_B0
 abs(F_AB) > F_AB0
 ```
 
+From our F-tests, we find that temperature has an effect on warping, while copper content(%) does not.  In addition, there is no interaction effect on warping.
+
 ## 5.23 (hand)
 
 \textbf{Consider the data in Problem 5.8.  Analyze the data, assuming that replicates are blocks.}
@@ -364,6 +366,8 @@ abs(F_A) > F_A0
 abs(F_B) > F_B0
 abs(F_AB) > F_AB0
 ```
+
+It appears both operators and production machines in addition to the interaction between the two have no effect on the breaking strength of a synthetic fiber.
 
 ##5.26
 
