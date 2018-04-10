@@ -87,7 +87,7 @@ surface.aov = aov(Surface ~ factor(Feed.Rate)*factor(Depth), surface)
 summary(surface.aov)
 ```
 
-The p-values are presented on the ANOVA output. The same p-values were used to determine our test in part (a). p-values are listed: 1.40e-10, 9.22e-09, 0.00156.
+The p-values are presented on the ANOVA output. The same p-values were used to determine our test in part (a). p-values are listed: 1.09e-9, 1.65e-07, 0.018.
 
 ##5.5
 
@@ -107,21 +107,13 @@ me=c(-1,1)*tk.cri+diff
 me
 ```
 
-We are 95% confident that the difference between feed rates 0.20 and 0.25 is (-32.9, 0.953).
+We are 95% confident that the difference between feed rates 0.20 and 0.25 is (-31.45, -0.55).
 
 ##5.7
 
-\textbf{Johnson and Leone (Statistics and Experimental
-Design in Engineering and the Physical Sciences, Wiley,
-1977) describe an experiment to investigate warping of
-copper plates. The two factors studied were the temperature
-and the copper content of the plates. The response variable
-was a measure of the amount of warping. The data were as
-follows:}
+\textbf{Johnson and Leone (Statistics and Experimental Design in Engineering and the Physical Sciences, Wiley, 1977) describe an experiment to investigate warping of copper plates. The two factors studied were the temperature and the copper content of the plates. The response variable was a measure of the amount of warping. The data were as follows:}
 
-\textbf{(a) Is there any indication that either factor affects the
-amount of warping? Is there any interaction between
-the factors? Use $\alpha$ =  0.05.}
+\textbf{(a) Is there any indication that either factor affects the amount of warping? Is there any interaction between the factors? Use $\alpha$ =  0.05.}
 
 ```{r}
 library(readxl)
@@ -163,7 +155,7 @@ $H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
 
 $H_1: (\tau\beta)_{ij} \ne 0$ at least one
 
-After reviewing the p-values from our ANOVA we can see that temperature and copper content have small p-values and we can conclude that both factors affect the amount of warping. However, the interaction variable has a large p-value, we fail to reject and conclude no interaction has an affect on warping.
+After reviewing the p-values from our ANOVA we can see that temperature and copper content have small p-values and we can conclude that both factors affect the amount of warping. However, the interaction variable has a large p-value, we fail to reject and conclude there is no interaction affect on warping.
 
 \textbf{(b) Analyze the residuals from this experiment.}
 
@@ -179,20 +171,11 @@ plot(as.numeric(warpCop$Copper.Content), res)
 
 Observing our plots, normality is good, residual plots are random and patternless. We can state that our model is good.
 
-\textbf{(c) Plot the average warping at each level of copper content
-and compare them to an appropriately scaled t distribution.
-Describe the differences in the effects of the
-different levels of copper content on warping. If low
-warping is desirable, what level of copper content
-would you specify?}
+\textbf{(c) Plot the average warping at each level of copper content and compare them to an appropriately scaled t distribution. Describe the differences in the effects of the different levels of copper content on warping. If low warping is desirable, what level of copper content would you specify?}
 
 ##5.8
 
-\textbf{The factors that influence the breaking strength of a
-synthetic fiber are being studied. Four production machines
-and three operators are chosen and a factorial experiment is
-run using fiber from the same production batch. The results
-are as follows:}
+\textbf{The factors that influence the breaking strength of a synthetic fiber are being studied. Four production machines and three operators are chosen and a factorial experiment is run using fiber from the same production batch. The results are as follows:}
 
 \textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ =  0.05.}
 
@@ -314,9 +297,9 @@ F_A0 <- 14.25
 F_B0 <- 14.25
 F_AB0 <- 3.77
 
-F_A > F_A0
-F_B > F_B0
-F_AB > F_AB0
+abs(F_A) > F_A0
+abs(F_B) > F_B0
+abs(F_AB) > F_AB0
 ```
 
 ## 5.23 (hand)
