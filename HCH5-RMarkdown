@@ -1,4 +1,4 @@
----
+﻿---
 title: "Chapter 5(Edition Eight): 5.4, 5.5, 5.7, 5.8, 5.22(Hand), 5.23(Hand), 5.26"
 author: "Jeremy Ling & Emmanuel Mejia"
 date: "April 10, 2018"
@@ -209,6 +209,8 @@ Seeing the normality plot and our plotted residuals. We see that normality is go
 
 ##5.22(Hand)
 
+\textbf{Consider the data in Problem 5.7.  Analyze the data, assuming that replicates are blocks.}
+
 ```{r}
 # loading libraries
 library(dplyr)
@@ -281,6 +283,8 @@ F_AB > F_AB0
 
 ##5.23
 
+\textbf{Consider the data in Problem 5.8.  Analyze the data, assuming that replicates are blocks.}
+
 ```{r}
 # creating table
 fiber <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
@@ -350,11 +354,41 @@ and the following data resulted.}
 
 \textbf{(a) Analyze the data and draw conclusions, using $\alpha$ =
 0.05.}
+```{r}
+#batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
+
+# batteries wide format
+batteries.w <- as.data.frame(x = matrix(data = c(rep(x = c("A", "B"),
+                                                     each = 2),
+                                                 c(8.6, 8.2, 9.4, 8.8),
+                                                 c(7.9, 8.4, 8.5, 8.9),
+                                                 c(5.4, 5.7, 5.8, 5.9)),
+                                        nrow = 4,
+                                        byrow = FALSE))
+
+names(batteries.w) <- c("Brand", "Radio", "Camera", "DVD")
+
+# battieries long format
+batteries <- melt(data = batteries.w, id.vars = c("Brand"))
+names(batteries) <- c("Brand", "Device", "Life")
+batteries
+
+# ANOVA
+batteries.aov = aov(as.numeric(Life)~factor(Brand)*factor(Device), batteries)
+summary(batteries.aov)
+```
+
+\textbf{(b) Investigate model adequacy by plotting the residuals.}
 
 ```{r}
-batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
-batteries.aov = aov(Life~Brand*Device, batteries)
-batteries.aov
+batteries.lm=lm(as.numeric(Life) ~ factor(Brand)*factor(Device), batteries)
+res=as.numeric(batteries$Life)-fitted(batteries.lm)
+library(car)
+qqPlot(res)
+plot(fitted(batteries.lm), res) 
+plot(as.numeric(batteries$Brand), res)
+plot(as.numeric(batteries$Device), res)
 ```
+While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
 
 
