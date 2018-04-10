@@ -158,6 +158,33 @@ different levels of copper content on warping. If low
 warping is desirable, what level of copper content
 would you specify?}
 
+```{r}
+Copper40 = (17+20+12+9+16+12+21+17)/8; Copper40
+Copper60 = (16+21+18+13+18+21+23+21)/8; Copper60
+Copper80 = (24+22+17+12+25+23+23+22)/8; Copper80
+Copper100 = (28+27+27+31+30+23+29+31)/8; Copper100
+average = mean(warpCop$Warping); average
+sd = sd(warpCop$Warping); sd
+
+x <- seq(-4,4,length=100)*sd + average
+hx <- dnorm(x,average,sd)
+
+plot(x, hx, type="l", lty=2, xlab="warping", ylab="copper content",
+     main="t distribution", axes=TRUE)
+abline(v = 15.5, lty = 2, col="red")
+abline(v = 18, lty = 2, col="blue")
+abline(v = 21, lty = 2, col="green")
+abline(v = 28, lty = 2, col="purple")
+```
+
+Use copper content 40 for the lowest amount of warping
+
+\textbf{(d) Suppose that temperature cannot be easily controlled
+in the environment in which the copper plates are to be
+used. Does this change your answer for part (c)?}
+
+Looking back in part (a) we agreed that temperature and copper content has affects on warping, alone. However, the interation term does not affect warping. In part (c) we are observing how copper content affects warping and decide which copper gives is the small amount of warping. If we were to change the temperature it will not change our answer since the interaction term has no influence on warping so our answer will remain the same in part (c).
+
 \pagebreak
 
 ##5.8
@@ -358,10 +385,12 @@ and the following data resulted.}
 
 \textbf{(a) Analyze the data and draw conclusions, using $\alpha$ =
 0.05.}
+
 ```{r}
 #batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
 
 # batteries wide format
+library(reshape2)
 batteries.w <- as.data.frame(x = matrix(data = c(rep(x = c("A", "B"),
                                                      each = 2),
                                                  c(8.6, 8.2, 9.4, 8.8),
@@ -381,10 +410,24 @@ batteries
 batteries.aov = aov(as.numeric(Life)~factor(Brand)*factor(Device), batteries)
 summary(batteries.aov)
 ```
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+We observe our ANOVA and we see that Brand and Device have an effect on battery Life. However, the interaction variable does not
+affect battery life.
 
 \textbf{(b) Investigate model adequacy by plotting the residuals.}
 
-```{r}
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
 batteries.lm=lm(as.numeric(Life) ~ factor(Brand)*factor(Device), batteries)
 res=as.numeric(batteries$Life)-fitted(batteries.lm)
 library(car)
@@ -394,5 +437,8 @@ plot(as.numeric(batteries$Brand), res)
 plot(as.numeric(batteries$Device), res)
 ```
 While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.  This model is not adequate.
+
+
+
 
 
