@@ -233,4 +233,4 @@ F_B > F_B0
 F_AB > F_AB0
 ```
 
-After running our F-tests we find that copper content (%) has an effect on warping, though temperature does not.  There is no interaction between the two.
+Using R as a calculator, after running our F-tests we find that copper content (%) has an effect on warping, though temperature does not.  There is no interaction between the two.
