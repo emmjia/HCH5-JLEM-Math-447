@@ -9,8 +9,7 @@ output: pdf_document
 
 \textbf{An engineer suspects that the surface finish of a metal
 part is influenced by the feed rate and the depth of cut. He
-selects three feed rates and four depths of cut. He then conducts
-a factorial experiment and obtains the following data}
+selects three feed rates and four depths of cut. He then conducts a factorial experiment and obtains the following data}
 
 \textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ = 0.05.}
 
@@ -121,7 +120,24 @@ the factors? Use $\alpha$ =  0.05.}
 
 ```{r}
 library(readxl)
-warpCop <- read_excel("warpCop.xlsx")
+# warpCop <- read_excel("warpCop.xlsx")
+
+# warpCop wide format
+warpCop.w <- as.data.frame(x = matrix(data = c(rep(c(50, 75, 100, 125),
+                                                   each = 2),
+                                               c(17, 20, 12, 9, 16, 12, 21, 17),
+                                               c(16, 21, 18, 13, 18, 21, 23, 21),
+                                               c(24, 22, 17, 12, 25, 23, 23, 22),
+                                               c(28, 27, 27, 31, 30, 23, 29, 31)),
+                                      byrow = FALSE,
+                                      nrow = 8))
+names(warpCop.w) <- c("Temperature", "40", "60", "80", "100")
+
+# warpCop long format
+warpCop <- melt(data = warpCop.w, id.vars = c("Temperature"))
+names(warpCop) <- c("Temperature", "Copper.Content", "Warping")
+warpCop
+
 warpCop$Temperature=as.factor(warpCop$Temperature) #factor A; a levels
 warpCop$Copper.Content=as.factor(warpCop$Copper.Content) #factor B; b levels
 warpCop.aov = aov(Warping ~ Temperature*Copper.Content, warpCop)
@@ -165,7 +181,72 @@ different levels of copper content on warping. If low
 warping is desirable, what level of copper content
 would you specify?}
 
+##5.8
+
+\textbf{The factors that influence the breaking strength of a
+synthetic fiber are being studied. Four production machines
+and three operators are chosen and a factorial experiment is
+run using fiber from the same production batch. The results
+are as follows:}
+
+\textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ =  0.05.}
+
+```{r}
+#fiber <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/fiber.xlsx")
+
+# fiber wide format
+fiber.w <- as.data.frame(x = matrix(data = c(rep(c("1", "2", "3"),
+                                                 each = 2),
+                                             c(109, 110, 110, 112, 116, 114),
+                                             c(110, 115, 110, 111, 112, 115),
+                                             c(108, 109, 111, 109, 114, 119),
+                                             c(110, 108, 114, 112, 120, 117)),
+                                    nrow = 6,
+                                    byrow = FALSE))
+names(fiber.w) <- c("Operator", "1", "2", "3", "4")
+
+# fiber long format
+fiber <- melt(data = fiber.w, id.vars = c("Operator"))
+names(fiber) <- c("Operator", "Machine", "Strength")
+fiber
+  
+
+fiber.aov = aov(as.numeric(Strength) ~ Operator*Machine, fiber)
+summary(fiber.aov)
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+Observing our p-values on our ANOVA we see that Operator has an influence of fiber strength, while Machine and the interaction term has no influence ine fiber strength.
+
+\textbf{(b) Prepare appropriate residual plots and comment on the
+model's adequacy.}
+
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
+fiber.lm=lm(Strength ~ Operator*Machine,fiber)
+res=fiber$Strength-fitted(fiber.lm)
+library(car)
+qqPlot(res)
+plot(fitted(fiber.lm), res) 
+plot(as.numeric(fiber$Operator), res)
+plot(as.numeric(fiber$Machine), res)
+```
+
+Seeing the normality plot and our plotted residuals. We see that normality is good and that residuals are random and patternless. We can state that the model is good.
+
 ##5.22(Hand)
+
+\textbf{Consider the data in Problem 5.7.  Analyze the data, assuming that replicates are blocks.}
 
 ```{r}
 # creating table
@@ -235,6 +316,8 @@ F_AB > F_AB0
 
 ## 5.23 (hand)
 
+\textbf{Consider the data in Problem 5.8.  Analyze the data, assuming that replicates are blocks.}
+
 ```{r}
 # creating table
 fiber <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
@@ -293,3 +376,51 @@ abs(F_A) > F_A0
 abs(F_B) > F_B0
 abs(F_AB) > F_AB0
 ```
+
+##5.26
+
+\textbf{An experiment was conducted to study the life (in
+hours) of two different brands of batteries in three different
+devices (radio, camera, and portable DVD player). A completely
+randomized two-factor factorial experiment was conducted
+and the following data resulted.}
+
+\textbf{(a) Analyze the data and draw conclusions, using $\alpha$ =
+0.05.}
+
+```{r}
+#batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
+
+# batteries wide format
+batteries.w <- as.data.frame(x = matrix(data = c(rep(x = c("A", "B"),
+                                                     each = 2),
+                                                 c(8.6, 8.2, 9.4, 8.8),
+                                                 c(7.9, 8.4, 8.5, 8.9),
+                                                 c(5.4, 5.7, 5.8, 5.9)),
+                                        nrow = 4,
+                                        byrow = FALSE))
+
+names(batteries.w) <- c("Brand", "Radio", "Camera", "DVD")
+
+# battieries long format
+batteries <- melt(data = batteries.w, id.vars = c("Brand"))
+names(batteries) <- c("Brand", "Device", "Life")
+batteries
+
+# ANOVA
+batteries.aov = aov(as.numeric(Life)~factor(Brand)*factor(Device), batteries)
+summary(batteries.aov)
+```
+
+\textbf{(b) Investigate model adequacy by plotting the residuals.}
+
+```{r}
+batteries.lm=lm(as.numeric(Life) ~ factor(Brand)*factor(Device), batteries)
+res=as.numeric(batteries$Life)-fitted(batteries.lm)
+library(car)
+qqPlot(res)
+plot(fitted(batteries.lm), res) 
+plot(as.numeric(batteries$Brand), res)
+plot(as.numeric(batteries$Device), res)
+```
+While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
