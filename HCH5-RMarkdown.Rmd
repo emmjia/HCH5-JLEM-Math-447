@@ -293,3 +293,38 @@ abs(F_A) > F_A0
 abs(F_B) > F_B0
 abs(F_AB) > F_AB0
 ```
+
+##5.26
+
+\textbf{An experiment was conducted to study the life (in
+hours) of two different brands of batteries in three different
+devices (radio, camera, and portable DVD player). A completely
+randomized two-factor factorial experiment was conducted
+and the following data resulted.}
+
+\textbf{(a) Analyze the data and draw conclusions, using $\alpha$ =
+0.05.}
+
+```{r}
+#batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
+
+# batteries wide format
+batteries.w <- as.data.frame(x = matrix(data = c(rep(x = c("A", "B"),
+                                                     each = 2),
+                                                 c(8.6, 8.2, 9.4, 8.8),
+                                                 c(7.9, 8.4, 8.5, 8.9),
+                                                 c(5.4, 5.7, 5.8, 5.9)),
+                                        nrow = 4,
+                                        byrow = FALSE))
+
+names(batteries.w) <- c("Brand", "Radio", "Camera", "DVD")
+
+# battieries long format
+batteries <- melt(data = batteries.w, id.vars = c("Brand"))
+names(batteries) <- c("Brand", "Device", "Life")
+batteries
+
+# ANOVA
+batteries.aov = aov(as.numeric(Life)~factor(Brand)*factor(Device), batteries)
+summary(batteries.aov)
+```
