@@ -9,8 +9,7 @@ output: pdf_document
 
 \textbf{An engineer suspects that the surface finish of a metal
 part is influenced by the feed rate and the depth of cut. He
-selects three feed rates and four depths of cut. He then conducts
-a factorial experiment and obtains the following data}
+selects three feed rates and four depths of cut. He then conducts a factorial experiment and obtains the following data}
 
 \textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ = 0.05.}
 
@@ -424,4 +423,4 @@ plot(fitted(batteries.lm), res)
 plot(as.numeric(batteries$Brand), res)
 plot(as.numeric(batteries$Device), res)
 ```
-While our qqplot reveals that our model looks normal, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
+While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.
