@@ -1,0 +1,444 @@
+---
+title: "Chapter 5(Edition Eight): 5.4, 5.5, 5.7, 5.8, 5.22(Hand), 5.23(Hand), 5.26"
+author: "Jeremy Ling & Emmanuel Mejia"
+date: "April 10, 2018"
+output: pdf_document
+---
+
+##5.4
+
+\textbf{An engineer suspects that the surface finish of a metal
+part is influenced by the feed rate and the depth of cut. He
+selects three feed rates and four depths of cut. He then conducts
+a factorial experiment and obtains the following data}
+
+\textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ = 0.05.}
+
+```{r}
+library(readxl)
+surface <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/surface.xlsx")
+####
+surface.aov = aov(Surface ~ Feed.Rate*Depth, surface)
+summary(surface.aov)
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+We analyze the anova and we can see from our p-values that they are all too small. We can state the row, column, and interaction are all significantly different and we can state that this model is significant.
+
+\textbf{(b) Prepare appropriate residual plots and comment on the
+model's adequacy.}
+
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
+surface.lm=lm(Surface ~ Feed.Rate*Depth,surface)
+res=surface$Surface-fitted(surface.lm)
+library(car)
+qqPlot(res)
+plot(fitted(surface.lm), res) 
+plot(as.numeric(surface$Feed.Rate), res)
+plot(as.numeric(surface$Depth), res)
+```
+
+We observe our plots and see normality is good and residuals are patternless, our model is good..
+
+\textbf{(c) Obtain point estimates of the mean surface finish at
+each feed rate.}
+
+```{r}
+total1 = (74+64+60+79+68+73+82+88+92+99+104+96)
+estimate0.20 = total1/12; estimate0.20
+total2 = (92+86+88+98+104+88+99+108+95+104+110+99)
+estimate0.25 = total2/12; estimate0.25
+total3 = (99+98+102+104+99+95+108+110+99+114+111+107)
+estimate0.30 = total3/12; estimate0.30
+```
+
+\textbf{(d) Find P-values for the tests in part (a)}
+
+```{r}
+surface.aov = aov(Surface ~ Feed.Rate*Depth, surface)
+summary(surface.aov)
+```
+
+The P-values are presented on the ANOVA output. The same p-values were used to determine our test in part (a). P-values are listed: 1.40e-10, 9.22e-09, 0.00156.
+
+\pagebreak
+
+##5.5
+
+\textbf{For the data in Problem 5.4, compute a 95 percent
+confidence interval estimate of the mean difference in
+response for feed rates of 0.20 and 0.25 in/min.}
+
+```{r}
+estimate0.20
+estimate0.25
+alpha = 0.05
+a=3
+b=4
+n=3
+MSe=summary(surface.aov)[[1]][4,3]
+tk.cri=qtukey(.95,a,a*b*(n-1))*sqrt(2*MSe/n)
+diff = estimate0.20-estimate0.25
+me=c(-1,1)*tk.cri+diff
+me
+```
+
+We are 95% confident that the difference between feed rates 0.20 and 0.25 is (-32.9, 0.953).
+
+\pagebreak
+
+##5.7
+
+\textbf{Johnson and Leone (Statistics and Experimental
+Design in Engineering and the Physical Sciences, Wiley,
+1977) describe an experiment to investigate warping of
+copper plates. The two factors studied were the temperature
+and the copper content of the plates. The response variable
+was a measure of the amount of warping. The data were as
+follows:}
+
+\textbf{(a) Is there any indication that either factor affects the
+amount of warping? Is there any interaction between
+the factors? Use $\alpha$ =  0.05.}
+
+```{r}
+library(readxl)
+warpCop <- read_excel("warpCop.xlsx")
+warpCop$Temperature=as.factor(warpCop$Temperature) #factor A; a levels
+warpCop$Copper.Content=as.factor(warpCop$Copper.Content) #factor B; b levels
+warpCop.aov = aov(Warping ~ Temperature*Copper.Content, warpCop)
+summary(warpCop.aov)
+
+MSe=summary(warpCop.aov)[[1]][4,3]
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+After reviewing the p-values from our ANOVA we can see that temperature and copper content have small p-values and we can conclude that both factors affect the amount of warping. However, the interaction variable has a large p-value, we fail to reject and conclude no interaction has an affect on warping.
+
+\textbf{(b) Analyze the residuals from this experiment.}
+
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
+warpCop.lm=lm(Warping ~ Temperature*Copper.Content,warpCop)
+res=warpCop$Warping-fitted(warpCop.lm)
+library(car)
+qqPlot(res)
+plot(fitted(warpCop.lm), res) 
+plot(as.numeric(warpCop$Temperature), res)
+plot(as.numeric(warpCop$Copper.Content), res)
+```
+
+Observing our plots, normality is good, residual plots are random and patternless. We can state that our model is good.
+
+\textbf{(c) Plot the average warping at each level of copper content
+and compare them to an appropriately scaled t distribution.
+Describe the differences in the effects of the
+different levels of copper content on warping. If low
+warping is desirable, what level of copper content
+would you specify?}
+
+```{r}
+Copper40 = (17+20+12+9+16+12+21+17)/8; Copper40
+Copper60 = (16+21+18+13+18+21+23+21)/8; Copper60
+Copper80 = (24+22+17+12+25+23+23+22)/8; Copper80
+Copper100 = (28+27+27+31+30+23+29+31)/8; Copper100
+average = mean(warpCop$Warping); average
+sd = sd(warpCop$Warping); sd
+
+x <- seq(-4,4,length=100)*sd + average
+hx <- dnorm(x,average,sd)
+
+plot(x, hx, type="l", lty=2, xlab="warping", ylab="copper content",
+     main="t distribution", axes=TRUE)
+abline(v = 15.5, lty = 2, col="red")
+abline(v = 18, lty = 2, col="blue")
+abline(v = 21, lty = 2, col="green")
+abline(v = 28, lty = 2, col="purple")
+```
+
+Use copper content 40 for the lowest amount of warping
+
+\textbf{(d) Suppose that temperature cannot be easily controlled
+in the environment in which the copper plates are to be
+used. Does this change your answer for part (c)?}
+
+Looking back in part (a) we agreed that temperature and copper content has affects on warping, alone. However, the interation term does not affect warping. In part (c) we are observing how copper content affects warping and decide which copper gives is the small amount of warping. If we were to change the temperature it will not change our answer since the interaction term has no influence on warping so our answer will remain the same in part (c).
+
+\pagebreak
+
+##5.8
+
+\textbf{The factors that influence the breaking strength of a
+synthetic fiber are being studied. Four production machines
+and three operators are chosen and a factorial experiment is
+run using fiber from the same production batch. The results
+are as follows:}
+
+\textbf{(a) Analyze the data and draw conclusions. Use $\alpha$ =  0.05.}
+
+```{r}
+fiber <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/fiber.xlsx")
+fiber.aov = aov(Strength ~ Operator*Machine, fiber)
+summary(fiber.aov)
+```
+
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+Observing our p-values on our ANOVA we see that Operator has an influence of fiber strength, while Machine and the interaction term has no influence ine fiber strength.
+
+\textbf{(b) Prepare appropriate residual plots and comment on the
+model's adequacy.}
+
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
+fiber.lm=lm(Strength ~ Operator*Machine,fiber)
+res=fiber$Strength-fitted(fiber.lm)
+library(car)
+qqPlot(res)
+plot(fitted(fiber.lm), res) 
+plot(as.numeric(fiber$Operator), res)
+plot(as.numeric(fiber$Machine), res)
+```
+
+Seeing the normality plot and our plotted residuals. We see that normality is good and that residuals are random and patternless. We can state that the model is good.
+
+\pagebreak
+
+##5.22(Hand)
+
+\textbf{Consider the data in Problem 5.7.  Analyze the data, assuming that replicates are blocks.}
+
+```{r}
+# loading libraries
+library(dplyr)
+
+# creating table
+warp <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
+                                              each = 16),
+                                          rep(x = c(50, 75, 100, 125),
+                                              each = 4,
+                                              times = 2),
+                                          rep(x = c(40, 60, 80, 100),
+                                              times = 8),
+                                          c(17, 16, 24, 28,
+                                            12, 18, 17, 27,
+                                            16, 18, 25, 30,
+                                            21, 23, 23, 29,
+                                            20, 21, 22, 27,
+                                            9, 13, 12, 31,
+                                            12, 21, 23, 23,
+                                            17, 21, 22, 31)),
+                                 nrow = 32,
+                                 byrow = FALSE))
+names(warp) <- c("Blocks", "Temp", "Copper", "Warp")
+attach(warp)
+
+# running ANOVA
+warp.aov <- aov(formula = as.numeric(Warp) ~ factor(Blocks) + factor(Temp)*factor(Copper),
+                data = warp)
+summary(warp.aov)
+
+
+# sum of squares components
+n = 2; a = 4; b = 4
+part2 <- ((17 + 16 + 24 + 28 + 12 + 18 + 17 + 27 + 16 + 18 + 25 + 30 + 21 + 23 + 23 + 29 + 20 + 21 + 22 + 27 + 9 + 13 + 12 + 31 + 12 + 21 + 23 + 23 + 17 + 21 + 22 + 31)**2) / (32)
+total <- ((17)**2 + (16)**2 + (24)**2 + (28)**2 + (12)**2 + (18)**2 + (17)**2 + (27)**2 + (16)**2 + (18)**2 + (25)**2 + (30)**2 + (21)**2 + (23)**2 + (23)**2 + (29)**2 + (20)**2 + (21)**2 + (22)**2 + (27)**2 + (9)**2 + (13)**2 + (12)**2 + (31)**2 + (12)**2 + (21)**2 + (23)**2 + (23)**2 + (17)**2 + (21)**2 + (22)**2 + (31)**2)
+blocks <- ((17 + 16 + 24 + 28 + 12 + 18 + 17 + 27 + 16 + 18 + 25 + 30 + 21 + 23 + 23 + 29)**2 + (20 + 21 + 22 + 27 + 9 + 13 + 12 + 31 + 12 + 21 + 23 + 23 + 17 + 21 + 22 + 31)**2) / (16)
+A <- ((17 + 16 + 24 + 28 + 20 + 21 + 22 + 27)**2 + (12 + 18 + 17 + 27 + 9 + 13 + 12 + 31)**2 + (16 + 18 + 25 + 30 + 12 + 21 + 23 + 23)**2 + (21 + 23 + 23 + 29 + 17 + 21 + 22 + 31)**2) / (8)
+B <- ((17 + 20 + 12 + 9 + 16 + 12 + 21 + 17)**2 + (16 + 21 + 18 + 13 + 18 + 21 + 23 + 21)**2 + (24 + 22 + 17 + 12 + 25 + 23 + 23 + 22)**2 + (28 + 27 + 27 + 31 + 30 + 23 + 29 + 31)**2) / (8)
+AB <- ((17 + 20)**2 + (16 + 21)**2 + (24 + 22)**2 + (28 + 27)**2 + (12 + 9)**2 + (18 + 13)**2 + (17 + 12)**2 + (27 + 31)**2 + (16 + 12)**2 + (18 + 21)**2 + (25 + 23)**2 + (30 + 23)**2 + (21 + 17)**2 + (23 + 21)**2 + (23 + 22)**2 + (29 + 31)**2) / (2)
+
+# sum of squares
+SS_total <- total - part2
+SS_block <- blocks - part2
+SS_A <- A - part2
+SS_B <- B - part2
+SS_AB <- AB - part2 - SS_A - SS_B
+SS_e <- SS_total - SS_block - SS_A - SS_B - SS_AB
+
+# mean sum of squares
+MS_total <- SS_total / 31
+MS_block <- SS_block / 1
+MS_A <- SS_A / 3
+MS_B <- SS_B / 3
+MS_AB <- SS_AB / 9
+MS_e <- SS_e / 15
+
+# F test
+F_A <- MS_A / MS_e
+F_B <- MS_B / MS_e
+F_AB <- MS_AB / MS_e
+
+F_A0 <- 14.25
+F_B0 <- 14.25
+F_AB0 <- 3.77
+
+abs(F_A) > F_A0
+abs(F_B) > F_B0
+abs(F_AB) > F_AB0
+```
+
+From our F-tests, we find that temperature has an effect on warping, while copper content(%) does not.  In addition, there is not interaction effect on warping.
+
+##5.23
+
+\textbf{Consider the data in Problem 5.8.  Analyze the data, assuming that replicates are blocks.}
+
+```{r}
+# creating table
+fiber <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
+                                               each = 12),
+                                           rep(x = c(1, 2, 3),
+                                               each = 4,
+                                               times = 2),
+                                           rep(x = c(1, 2, 3, 4),
+                                               times = 6),
+                                           c(109, 110, 108, 110,
+                                             110, 110, 111, 114,
+                                             116, 112, 114, 120,
+                                             110, 115, 109, 108,
+                                             112, 111, 109, 112,
+                                             114, 115, 119, 117)),
+                       nrow = 24,
+                       byrow = FALSE))
+names(fiber) <- c("Blocks", "Operator", "Machine", "Strength")
+attach(fiber)
+
+# sum of squares components
+n = 2; a = 3; b = 4
+part2 <- ((109 + 110 + 108 + 110 + 110 + 110 + 111 + 114 + 116 + 112 + 114 + 120 + 110 + 115 + 109 + 108 + 112 + 111 + 109 + 112 + 114 + 115 + 119 + 117)**2) / (24)
+total <- ((109)**2 + (110)**2 + (108)**2 + (110)**2 + (110)**2 + (110)**2 + (111)**2 + (114)**2 + (116)**2 + (112)**2 + (114)**2 + (120)**2 + (110)**2 + (115)**2 + (109)**2 + (108)**2 + (112)**2 + (111)**2 + (109)**2 + (112)**2 + (114)**2 + (115)**2 + (119)**2 + (117)**2)
+blocks <- ((109 + 110 + 108 + 110 + 110 + 110 + 111 + 114 + 116 + 112 + 114 + 120)**2 + (110 + 115 + 109 + 108 + 112 + 111 + 109 + 112 + 114 + 115 + 119 + 117)**2) / (12)
+A <- ((109 + 110 + 108 + 110 + 110 + 115 + 109 + 108)**2 + (110 + 110 + 111 + 114 + 112 + 111 + 109 + 112)**2 + (116 + 112 + 114 + 120 + 114 + 115 + 119 + 117)**2) / (8)
+B <- ((109 + 110 + 110 + 112 + 116 + 114)**2 + (110 + 115 + 110 + 111 + 112 + 115)**2 + (108 + 109 + 111 + 109 + 114 + 119)**2 + (110 + 108 + 114 + 112 + 120 + 117)**2) / (6)
+AB <- ((109 + 110)**2 + (110 + 115)**2 + (108 + 109)**2 + (110 + 108)**2 + (110 + 112)**2 + (110 + 111)**2 + (111 + 109)**2 + (114 + 112)**2 + (116 + 114)**2 + (112 + 115)**2 + (114 + 119)**2 + (120 + 117)**2) / (2)
+
+# sum of squares
+SS_total <- total - part2
+SS_block <- blocks - part2
+SS_A <- A - part2
+SS_B <- B - part2
+SS_AB <- AB - part2 - SS_A - SS_B
+SS_e <- SS_total - SS_block - SS_A - SS_B - SS_AB
+
+# mean sum of squares
+MS_total <- SS_total / 23
+MS_block <- SS_block / 1
+MS_A <- SS_A / 2
+MS_B <- SS_B / 3
+MS_AB <- SS_AB / 6
+MS_e <- SS_e / 11
+
+# F test
+F_A <- MS_A / MS_e
+F_B <- MS_B / MS_e
+F_AB <- MS_AB / MS_e
+
+F_A0 <- 39.405  # .025, 2, 11
+F_B0 <- 14.38   # .025, 3, 11
+F_AB0 <- 5.415  # .025, 6, 11
+
+abs(F_A) > F_A0
+abs(F_B) > F_B0
+abs(F_AB) > F_AB0
+```
+
+It appears both operators and production machines in addition to the interaction between the two have no effect on the breaking strength of a synthetic fiber.
+
+##5.26
+
+\textbf{An experiment was conducted to study the life (in
+hours) of two different brands of batteries in three different
+devices (radio, camera, and portable DVD player). A completely
+randomized two-factor factorial experiment was conducted
+and the following data resulted.}
+
+\textbf{(a) Analyze the data and draw conclusions, using $\alpha$ =
+0.05.}
+
+```{r}
+#batteries <- read_excel("C:/Users/Emmanuel/Desktop/SPRING 2018/MATH 447/Chapter 5/batteries.xlsx")
+
+# batteries wide format
+library(reshape2)
+batteries.w <- as.data.frame(x = matrix(data = c(rep(x = c("A", "B"),
+                                                     each = 2),
+                                                 c(8.6, 8.2, 9.4, 8.8),
+                                                 c(7.9, 8.4, 8.5, 8.9),
+                                                 c(5.4, 5.7, 5.8, 5.9)),
+                                        nrow = 4,
+                                        byrow = FALSE))
+
+names(batteries.w) <- c("Brand", "Radio", "Camera", "DVD")
+
+# battieries long format
+batteries <- melt(data = batteries.w, id.vars = c("Brand"))
+names(batteries) <- c("Brand", "Device", "Life")
+batteries
+
+# ANOVA
+batteries.aov = aov(as.numeric(Life)~factor(Brand)*factor(Device), batteries)
+summary(batteries.aov)
+```
+$H_0: \tau_1 = ... = \tau_a = 0$
+
+$H_1: \tau_i \ne 0$ at least one
+
+$H_0: \beta_1 = ... = \beta_b = 0$
+
+$H_1: \beta_j \ne 0$ at least one
+
+$H_0: (\tau\beta)_{1 1} = ... = (\tau\beta)_{a b} = 0$
+
+$H_1: (\tau\beta)_{ij} \ne 0$ at least one
+
+We observe our ANOVA and we see that Brand and Device have an effect on battery Life. However, the interaction variable does not
+affect battery life.
+
+\textbf{(b) Investigate model adequacy by plotting the residuals.}
+
+```{r,echo=FALSE,out.width='.49\\linewidth', fig.width=3, fig.height=3}
+batteries.lm=lm(as.numeric(Life) ~ factor(Brand)*factor(Device), batteries)
+res=as.numeric(batteries$Life)-fitted(batteries.lm)
+library(car)
+qqPlot(res)
+plot(fitted(batteries.lm), res) 
+plot(as.numeric(batteries$Brand), res)
+plot(as.numeric(batteries$Device), res)
+```
+While our qqplot reveals that our model looks normally distributed, our residuals don't seem randomly distributed around 0, and the variances of residuals are not homogenous.  This model is not adequate.
+
+
+
+
+
