@@ -189,6 +189,11 @@ warp <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
 names(warp) <- c("Blocks", "Temp", "Copper", "Warp")
 attach(warp)
 
+# running ANOVA
+warp.aov <- aov(formula = as.numeric(Warp) ~ factor(Blocks) + factor(Temp)*factor(Copper),
+                data = warp)
+summary(warp.aov)
+
 # sum of squares components
 n = 2; a = 4; b = 4
 part2 <- ((17 + 16 + 24 + 28 + 12 + 18 + 17 + 27 + 16 + 18 + 25 + 30 + 21 + 23 + 23 + 29 + 20 + 21 + 22 + 27 + 9 + 13 + 12 + 31 + 12 + 21 + 23 + 23 + 17 + 21 + 22 + 31)**2) / (32)
@@ -219,75 +224,13 @@ F_A <- MS_A / MS_e
 F_B <- MS_B / MS_e
 F_AB <- MS_AB / MS_e
 
-F_A0 <- 14.25 # .025, 3, 15
-F_B0 <- 14.25 # .025, 3, 15
-F_AB0 <- 3.77 # .025, 9, 15
+F_A0 <- 14.25
+F_B0 <- 14.25
+F_AB0 <- 3.77
 
-abs(F_A) > F_A0
-abs(F_B) > F_B0
-abs(F_AB) > F_AB0
+F_A > F_A0
+F_B > F_B0
+F_AB > F_AB0
 ```
 
 Using R as a calculator, after running our F-tests we find that copper content (%) has an effect on warping, though temperature does not.  There is no interaction between the two.
-
-## 5.23 (hand)
-
-```{r}
-# creating table
-fiber <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
-                                               each = 12),
-                                           rep(x = c(1, 2, 3),
-                                               each = 4,
-                                               times = 2),
-                                           rep(x = c(1, 2, 3, 4),
-                                               times = 6),
-                                           c(109, 110, 108, 110,
-                                             110, 110, 111, 114,
-                                             116, 112, 114, 120,
-                                             110, 115, 109, 108,
-                                             112, 111, 109, 112,
-                                             114, 115, 119, 117)),
-                       nrow = 24,
-                       byrow = FALSE))
-names(fiber) <- c("Blocks", "Operator", "Machine", "Strength")
-attach(fiber)
-
-# sum of squares components
-n = 2; a = 3; b = 4
-part2 <- ((109 + 110 + 108 + 110 + 110 + 110 + 111 + 114 + 116 + 112 + 114 + 120 + 110 + 115 + 109 + 108 + 112 + 111 + 109 + 112 + 114 + 115 + 119 + 117)**2) / (24)
-total <- ((109)**2 + (110)**2 + (108)**2 + (110)**2 + (110)**2 + (110)**2 + (111)**2 + (114)**2 + (116)**2 + (112)**2 + (114)**2 + (120)**2 + (110)**2 + (115)**2 + (109)**2 + (108)**2 + (112)**2 + (111)**2 + (109)**2 + (112)**2 + (114)**2 + (115)**2 + (119)**2 + (117)**2)
-blocks <- ((109 + 110 + 108 + 110 + 110 + 110 + 111 + 114 + 116 + 112 + 114 + 120)**2 + (110 + 115 + 109 + 108 + 112 + 111 + 109 + 112 + 114 + 115 + 119 + 117)**2) / (12)
-A <- ((109 + 110 + 108 + 110 + 110 + 115 + 109 + 108)**2 + (110 + 110 + 111 + 114 + 112 + 111 + 109 + 112)**2 + (116 + 112 + 114 + 120 + 114 + 115 + 119 + 117)**2) / (8)
-B <- ((109 + 110 + 110 + 112 + 116 + 114)**2 + (110 + 115 + 110 + 111 + 112 + 115)**2 + (108 + 109 + 111 + 109 + 114 + 119)**2 + (110 + 108 + 114 + 112 + 120 + 117)**2) / (6)
-AB <- ((109 + 110)**2 + (110 + 115)**2 + (108 + 109)**2 + (110 + 108)**2 + (110 + 112)**2 + (110 + 111)**2 + (111 + 109)**2 + (114 + 112)**2 + (116 + 114)**2 + (112 + 115)**2 + (114 + 119)**2 + (120 + 117)**2) / (2)
-
-# sum of squares
-SS_total <- total - part2
-SS_block <- blocks - part2
-SS_A <- A - part2
-SS_B <- B - part2
-SS_AB <- AB - part2 - SS_A - SS_B
-SS_e <- SS_total - SS_block - SS_A - SS_B - SS_AB
-
-# mean sum of squares
-MS_total <- SS_total / 23
-MS_block <- SS_block / 1
-MS_A <- SS_A / 2
-MS_B <- SS_B / 3
-MS_AB <- SS_AB / 6
-MS_e <- SS_e / 11
-
-# F test
-F_A <- MS_A / MS_e
-F_B <- MS_B / MS_e
-F_AB <- MS_AB / MS_e
-
-F_A0 <- 39.405  # .025, 2, 11
-F_B0 <- 14.38   # .025, 3, 11
-F_AB0 <- 5.415  # .025, 6, 11
-
-abs(F_A) > F_A0
-abs(F_B) > F_B0
-abs(F_AB) > F_AB0
-```
-
