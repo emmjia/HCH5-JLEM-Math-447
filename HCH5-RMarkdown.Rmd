@@ -247,6 +247,8 @@ Seeing the normality plot and our plotted residuals. We see that normality is go
 
 ##5.22(Hand)
 
+\textbf{Consider the data in Problem 5.7.  Analyze the data, assuming that replicates are blocks.}
+
 ```{r}
 # creating table
 warp <- as.data.frame(x = matrix(data = c(rep(x = c("Block 1", "Block 2"),
@@ -314,6 +316,8 @@ F_AB > F_AB0
 ```
 
 ## 5.23 (hand)
+
+\textbf{Consider the data in Problem 5.8.  Analyze the data, assuming that replicates are blocks.}
 
 ```{r}
 # creating table
